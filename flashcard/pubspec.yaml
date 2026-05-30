@@ -1,14 +1,15 @@
-name: flashcard
-description: "A new Flutter project."
+name: flashcard_quiz
+description: A vibrant flashcard quiz app for studying.
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.0
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
