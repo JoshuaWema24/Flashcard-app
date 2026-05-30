@@ -1,12 +1,9 @@
+// widgets/flashcard_widget.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/flashcard.dart';
 
 class FlashcardWidget extends StatefulWidget {
-  final Flashcard card;
-  final bool showAnswer;
-  final VoidCallback onToggle;
-
   const FlashcardWidget({
     super.key,
     required this.card,
@@ -14,27 +11,19 @@ class FlashcardWidget extends StatefulWidget {
     required this.onToggle,
   });
 
+  final Flashcard card;
+  final VoidCallback onToggle;
+  final bool showAnswer;
+
   @override
   State<FlashcardWidget> createState() => _FlashcardWidgetState();
 }
 
 class _FlashcardWidgetState extends State<FlashcardWidget>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
   late Animation<double> _animation;
+  late AnimationController _controller;
   bool _isFront = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 420),
-    );
-    _animation = Tween<double>(begin: 0, end: pi).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
 
   @override
   void didUpdateWidget(FlashcardWidget oldWidget) {
@@ -66,37 +55,14 @@ class _FlashcardWidgetState extends State<FlashcardWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: widget.onToggle,
-            child: AnimatedBuilder(
-              animation: _animation,
-              builder: (_, __) {
-                final angle = _animation.value;
-                final isShowingFront = angle < pi / 2;
-                return Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..rotateY(angle),
-                  child: isShowingFront
-                      ? _buildFace(isFront: true)
-                      : Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()..rotateY(pi),
-                          child: _buildFace(isFront: false),
-                        ),
-                );
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        _buildToggleButton(),
-      ],
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
+    _animation = Tween<double>(begin: 0, end: pi).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
 
@@ -189,6 +155,41 @@ class _FlashcardWidgetState extends State<FlashcardWidget>
               const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: widget.onToggle,
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (_, __) {
+                final angle = _animation.value;
+                final isShowingFront = angle < pi / 2;
+                return Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateY(angle),
+                  child: isShowingFront
+                      ? _buildFace(isFront: true)
+                      : Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()..rotateY(pi),
+                          child: _buildFace(isFront: false),
+                        ),
+                );
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildToggleButton(),
+      ],
     );
   }
 }
